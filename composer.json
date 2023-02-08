@@ -1,0 +1,25 @@
+{
+    "name": "for-wintercms/wn-toolbox-plugin",
+    "type": "winter-plugin",
+    "description": "Plugin with toolbox for Winter CMS",
+    "homepage": "https://github.com/for-wintercms/wn-toolbox-plugin",
+    "keywords": ["winter", "wintercms", "toolbox"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "DiamondSystems",
+            "email": "me@diamondsystems.org"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/for-wintercms/wn-toolbox-plugin/issues",
+        "source": "https://github.com/for-wintercms/wn-toolbox-plugin"
+    },
+    "require": {
+        "php": ">=7.2",
+        "composer/installers": "~1.0"
+    },
+    "extra": {
+        "installer-name": "toolbox"
+    }
+}
