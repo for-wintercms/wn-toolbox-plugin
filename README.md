@@ -5,5 +5,5 @@
 Use composer to install the plugin:
 
 ```bash
-composer require winter/wn-translate-plugin
+composer require for-wintercms/wn-toolbox-plugin
 ```
