@@ -1,4 +1,6 @@
-# Toolbox for Winter CMS
+# Toolbox Plugin
+
+Toolbox for Winter CMS
 
 ### Getting started
 
