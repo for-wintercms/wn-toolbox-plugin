@@ -2,9 +2,11 @@
 
 namespace ForWinterCms\Toolbox;
 
+use Event;
 use Backend;
-use ForWinterCms\Toolbox\Models\SettingsPages;
 use System\Classes\PluginBase;
+use Cms\Models\MaintenanceSetting;
+use ForWinterCms\Toolbox\Models\SettingsPages;
 
 /**
  * Toolbox Plugin Information File
@@ -33,7 +35,7 @@ class Plugin extends PluginBase
      */
     public function register()
     {
-        // $this->registerConsoleCommand('forwintercms:addadmin', 'ForWinterCms\Toolbox\Console\AddAdmin');
+        $this->extendMaintenanceSettings();
     }
 
     public function registerPermissions()
@@ -87,5 +89,78 @@ class Plugin extends PluginBase
         return [
             'ForWinterCms\Toolbox\FormWidgets\FaIcons' => 'faicons',
         ];
+    }
+
+    public function extendMaintenanceSettings()
+    {
+        MaintenanceSetting::extend(function($model) {
+            $model->attachOne['logo_icon'] = 'System\Models\File';
+            $model->rules['social_network.*.url'] = 'sometimes|required|url';
+        });
+
+        Event::listen('backend.form.extendFields', function ($widget)
+        {
+            $controller = $widget->getController();
+            if (! $controller instanceof \System\Controllers\Settings)
+                return;
+            if (! $widget->model instanceof \Cms\Models\MaintenanceSetting)
+                return;
+            if (! isset($widget->fields['is_enabled']))
+                return;
+
+            $widget->addTabFields([
+                'title' => [
+                    'label' => 'Title',
+                    'type' => 'text',
+                    'span' => 'left',
+                    'default' => 'Site maintenance',
+                    'comment' => 'Title for the maintenance page',
+                    'tab' => 'Info'
+                ],
+                'counter' => [
+                    'label'   => 'Counter',
+                    'type'    => 'datepicker',
+                    'mode'    => 'datetime',
+                    'span'    => 'right',
+                    'comment' => 'For a timer (counter) showing the remaining time',
+                    'tab'     => 'Info'
+                ],
+                'desc' => [
+                    'label'   => 'Description',
+                    'type'    => 'richeditor',
+                    'size'    => 'huge',
+                    'span'    => 'full',
+                    'tab'     => 'Info'
+                ],
+                'logo_icon' => [
+                    'label' => 'Logo icon',
+                    'type' => 'fileupload',
+                    'mode' => 'image',
+                    'imageHeight' => '100',
+                    'imageWidth' => '100',
+                    'span' => 'left',
+                    'tab' => 'Brand'
+                ],
+                'social_network' => [
+                    'label'   => 'Social network',
+                    'type'    => 'repeater',
+                    'tab'     => 'Contacts',
+                    'form'    => [
+                        'fields' => [
+                            'icon' => [
+                                'label'   => 'Icon',
+                                'type'    => 'faicons',
+                                'span'    => 'left',
+                            ],
+                            'url' => [
+                                'label'   => 'Link',
+                                'type'    => 'text',
+                                'span'    => 'right',
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+        });
     }
 }
