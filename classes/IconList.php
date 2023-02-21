@@ -32,6 +32,76 @@ class IconList
             self::getGenderIcons();
     }
 
+    public static function getAllGroupedIcons()
+    {
+        return [
+            'web_application' => [
+                'name' => 'Web application',
+                'icons' => self::getWebApplicationIcons()
+            ],
+            'medical' => [
+                'name' => 'Medical',
+                'icons' => self::getMedicalIcons()
+            ],
+            'text_editor' => [
+                'name' => 'Text editor',
+                'icons' => self::getTextEditorIcons()
+            ],
+            'spinner' => [
+                'name' => 'Spinner',
+                'icons' => self::getSpinnerIcons()
+            ],
+            'file_type' => [
+                'name' => 'File type',
+                'icons' => self::getFileTypeIcons()
+            ],
+            'directional' => [
+                'name' => 'Directional',
+                'icons' => self::getDirectionalIcons()
+            ],
+            'video_player' => [
+                'name' => 'Video player',
+                'icons' => self::getVideoPlayerIcons()
+            ],
+            'form_control' => [
+                'name' => 'Form control',
+                'icons' => self::getFormControlIcons()
+            ],
+            'transportation' => [
+                'name' => 'Transportation',
+                'icons' => self::getTransportationIcons()
+            ],
+            'chart' => [
+                'name' => 'Chart',
+                'icons' => self::getChartIcons()
+            ],
+            'brand' => [
+                'name' => 'Brand',
+                'icons' => self::getBrandIcons()
+            ],
+            'hand' => [
+                'name' => 'Hand',
+                'icons' => self::getHandIcons()
+                ],
+            'payment' => [
+                'name' => 'Payment',
+                'icons' => self::getPaymentIcons()
+            ],
+            'currency' => [
+                'name' => 'Currency',
+                'icons' => self::getCurrencyIcons()
+            ],
+            'accessibility' => [
+                'name' => 'Accessibility',
+                'icons' => self::getAccessibilityIcons()
+            ],
+            'gender' => [
+                'name' => 'Gender',
+                'icons' => self::getGenderIcons()
+],
+        ];
+    }
+
     public static function getWebApplicationIcons()
     {
         return [
