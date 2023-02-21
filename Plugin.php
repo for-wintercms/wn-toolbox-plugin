@@ -81,4 +81,11 @@ class Plugin extends PluginBase
             ]
         ];
     }
+
+    public function registerFormWidgets()
+    {
+        return [
+            'ForWinterCms\Toolbox\FormWidgets\FaIcons' => 'faicons',
+        ];
+    }
 }
