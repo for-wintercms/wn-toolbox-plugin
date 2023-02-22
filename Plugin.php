@@ -4,9 +4,11 @@ namespace ForWinterCms\Toolbox;
 
 use Event;
 use Backend;
+use BackendAuth;
 use System\Classes\PluginBase;
 use Cms\Models\MaintenanceSetting;
 use ForWinterCms\Toolbox\Models\SettingsPages;
+use System\Controllers\Settings as SettingsController;
 
 /**
  * Toolbox Plugin Information File
@@ -43,6 +45,13 @@ class Plugin extends PluginBase
         $categoryPages = 'Pages';
 
         return [
+            // CMS
+            'cms.maintenance_mode_select_page' => [
+                'label' => 'Selecting the maintenance mode activation page.',
+                'tab' => 'cms::lang.permissions.name'
+            ],
+
+            // Pages
             'forwintercms.toolbox.access_pages' => [
                 'label' => 'Manage the all pages',
                 'tab' => $categoryPages
@@ -93,22 +102,43 @@ class Plugin extends PluginBase
 
     public function extendMaintenanceSettings()
     {
+        /**
+         * @var $model MaintenanceSetting
+         */
         MaintenanceSetting::extend(function($model) {
             $model->attachOne['logo_icon'] = 'System\Models\File';
             $model->rules['social_network.*.url'] = 'sometimes|required|url';
         });
 
-        Event::listen('backend.form.extendFields', function ($widget)
+        /**
+         * @var $settingsManager \System\Classes\SettingsManager
+         */
+        Event::listen('system.settings.extendItems', function ($settingsManager) {
+            $settingsManager->addSettingItem('Winter.Cms', 'maintenance_settings', [
+                'permissions' => ['cms.manage_themes', 'cms.maintenance_mode_select_page'],
+            ]);
+        });
+
+        /**
+         * @var $formWidget Backend\Widgets\Form
+         */
+        Event::listen('backend.form.extendFields', function ($formWidget)
         {
-            $controller = $widget->getController();
-            if (! $controller instanceof \System\Controllers\Settings)
+            $controller = $formWidget->getController();
+            if (! $controller instanceof SettingsController)
                 return;
-            if (! $widget->model instanceof \Cms\Models\MaintenanceSetting)
+            if (! $formWidget->model instanceof \Cms\Models\MaintenanceSetting)
                 return;
-            if (! isset($widget->fields['is_enabled']))
+            if (! isset($formWidget->fields['is_enabled']))
                 return;
 
-            $widget->addTabFields([
+            // control permission
+            $user = BackendAuth::getUser();
+            if (! $user->hasAccess('cms.manage_themes') && $user->hasAccess('cms.maintenance_mode_select_page'))
+                $formWidget->removeField('cms_page');
+
+            // add additional configuration fields
+            $formWidget->addTabFields([
                 'title' => [
                     'label' => 'Title',
                     'type' => 'text',
@@ -126,26 +156,26 @@ class Plugin extends PluginBase
                     'tab'     => 'Info'
                 ],
                 'desc' => [
-                    'label'   => 'Description',
-                    'type'    => 'richeditor',
-                    'size'    => 'huge',
-                    'span'    => 'full',
-                    'tab'     => 'Info'
+                    'label' => 'Description',
+                    'type'  => 'richeditor',
+                    'size'  => 'huge',
+                    'span'  => 'full',
+                    'tab'   => 'Info'
                 ],
                 'logo_icon' => [
-                    'label' => 'Logo icon',
-                    'type' => 'fileupload',
-                    'mode' => 'image',
+                    'label'       => 'Logo icon',
+                    'type'        => 'fileupload',
+                    'mode'        => 'image',
                     'imageHeight' => '100',
-                    'imageWidth' => '100',
-                    'span' => 'left',
-                    'tab' => 'Brand'
+                    'imageWidth'  => '100',
+                    'span'        => 'left',
+                    'tab'         => 'Brand'
                 ],
                 'social_network' => [
-                    'label'   => 'Social network',
-                    'type'    => 'repeater',
-                    'tab'     => 'Contacts',
-                    'form'    => [
+                    'label' => 'Social network',
+                    'type'  => 'repeater',
+                    'tab'   => 'Contacts',
+                    'form'  => [
                         'fields' => [
                             'icon' => [
                                 'label'   => 'Icon',
