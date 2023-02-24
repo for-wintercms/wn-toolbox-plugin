@@ -2,9 +2,11 @@
 
 namespace ForWinterCms\Toolbox;
 
+use File;
 use Event;
 use Backend;
 use BackendAuth;
+use Cms\Classes\Theme;
 use System\Classes\PluginBase;
 use Cms\Models\MaintenanceSetting;
 use ForWinterCms\Toolbox\Models\SettingsPages;
@@ -37,6 +39,7 @@ class Plugin extends PluginBase
      */
     public function register()
     {
+        $this->autoCreateContentFiles();
         $this->extendMaintenanceSettings();
     }
 
@@ -98,6 +101,32 @@ class Plugin extends PluginBase
         return [
             'ForWinterCms\Toolbox\FormWidgets\FaIcons' => 'faicons',
         ];
+    }
+
+    public function autoCreateContentFiles()
+    {
+        /**
+         * @var $controller \Cms\Classes\Controller
+         */
+        Event::listen('cms.page.beforeRenderContent', function ($controller, $contentName)
+        {
+            $contentFilePath = Theme::getActiveTheme()->getPath().'/content/'.$contentName;
+
+            if (File::isFile($contentFilePath))
+                return false;
+            if (! env('AUTO_CREATE_CMS_CONTENT_FILES', false))
+                return false;
+            if (! preg_match("/\.(htm|md|txt)$/", $contentName))
+                return false;
+
+            // create content file
+            $dir = dirname($contentFilePath);
+            if (! File::isDirectory($dir))
+                File::makeDirectory($dir, 0755, true, true);
+            File::put($contentFilePath, '');
+
+            return false;
+        });
     }
 
     public function extendMaintenanceSettings()
