@@ -98,7 +98,7 @@ class IconList
             'gender' => [
                 'name' => 'Gender',
                 'icons' => self::getGenderIcons()
-],
+            ],
         ];
     }
 

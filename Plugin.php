@@ -39,6 +39,7 @@ class Plugin extends PluginBase
      */
     public function register()
     {
+        $this->addFaIconsInStaticMenu();
         $this->autoCreateContentFiles();
         $this->extendMaintenanceSettings();
     }
@@ -101,6 +102,24 @@ class Plugin extends PluginBase
         return [
             'ForWinterCms\Toolbox\FormWidgets\FaIcons' => 'faicons',
         ];
+    }
+
+    public function addFaIconsInStaticMenu()
+    {
+        Event::listen('backend.form.extendFields', function ($widget) {
+            if (! $widget->getController() instanceof \Winter\Pages\Controllers\Index)
+                return;
+            if (! $widget->model instanceof \Winter\Pages\Classes\MenuItem)
+                return;
+            $widget->addTabFields([
+                'viewBag[faicons]' => [
+                    'tab' => 'FontAwesome',
+                    'label' => 'Icons',
+                    'comment' => 'FontAwesome icons',
+                    'type' => 'faicons'
+                ]
+            ]);
+        });
     }
 
     public function autoCreateContentFiles()
