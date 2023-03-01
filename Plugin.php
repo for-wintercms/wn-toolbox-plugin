@@ -7,6 +7,7 @@ use Event;
 use Backend;
 use BackendAuth;
 use Cms\Classes\Theme;
+use ForWinterCms\Toolbox\Classes\IconList;
 use System\Classes\PluginBase;
 use Cms\Models\MaintenanceSetting;
 use ForWinterCms\Toolbox\Models\SettingsPages;
@@ -102,6 +103,26 @@ class Plugin extends PluginBase
         return [
             'ForWinterCms\Toolbox\FormWidgets\FaIcons' => 'faicons',
         ];
+    }
+
+    public function registerMarkupTags()
+    {
+        return [
+            'filters' => [
+                'faIconClass' => [$this, 'filterFaIconClass']
+            ]
+        ];
+    }
+
+    public function filterFaIconClass($text)
+    {
+        if (! $text)
+            return $text;
+
+        if (in_array($text, IconList::getBrandIcons()))
+            return 'fab fa-'.$text;
+        else
+            return 'fa fa-'.$text;
     }
 
     public function addFaIconsInStaticMenu()
