@@ -150,11 +150,11 @@ class Plugin extends PluginBase
          */
         Event::listen('cms.page.beforeRenderContent', function ($controller, $contentName)
         {
-            $contentFilePath = Theme::getActiveTheme()->getPath().'/content/'.$contentName;
-
-            if (File::isFile($contentFilePath))
-                return false;
             if (! env('AUTO_CREATE_CMS_CONTENT_FILES', false))
+                return false;
+
+            $contentFilePath = Theme::getActiveTheme()->getPath().'/content/'.$contentName;
+            if (File::isFile($contentFilePath))
                 return false;
             if (! preg_match("/\.(htm|md|txt)$/", $contentName))
                 return false;
