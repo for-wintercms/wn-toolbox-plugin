@@ -137,7 +137,16 @@ class Plugin extends PluginBase
                     'tab' => 'FontAwesome',
                     'label' => 'Icons',
                     'comment' => 'FontAwesome icons',
+                    'span' => 'left',
                     'type' => 'faicons'
+                ],
+                'viewBag[facolor]' => [
+                    'tab' => 'FontAwesome',
+                    'label' => 'Color',
+                    'comment' => 'FontAwesome color',
+                    'span' => 'right',
+//                    'type' => 'colorpicker'
+                    'type' => 'text'
                 ]
             ]);
         });
