@@ -1,12 +1,18 @@
 <?php if ($this->previewMode): ?>
 
     <div class="form-control">
-        <i class="icon-<?= $value ?>"></i> icon-<?= e($value) ?>
+        <?php
+            if (empty($value))
+                echo '-';
+            else
+                echo '<i class="icon-'. $value .'></i> icon-'.e($value);
+        ?>
     </div>
 
 <?php else: ?>
 
     <select id="<?= $this->getId('select') ?>" name="<?= $name ?>" class="form-control custom-select">
+        <option value="">NONE</option>
         <?php foreach ($this->getFaIcons() as $groupIcons) : ?>
         <optgroup label="<?= $groupIcons['name'] ?>">
             <?php foreach ($groupIcons['icons'] as $icon) {
