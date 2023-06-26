@@ -151,21 +151,19 @@ class Plugin extends PluginBase
         Event::listen('cms.page.beforeRenderContent', function ($controller, $contentName)
         {
             if (! env('AUTO_CREATE_CMS_CONTENT_FILES', false))
-                return false;
+                return;
 
             $contentFilePath = Theme::getActiveTheme()->getPath().'/content/'.$contentName;
             if (File::isFile($contentFilePath))
-                return false;
+                return;
             if (! preg_match("/\.(htm|md|txt)$/", $contentName))
-                return false;
+                return;
 
             // create content file
             $dir = dirname($contentFilePath);
             if (! File::isDirectory($dir))
                 File::makeDirectory($dir, 0755, true, true);
             File::put($contentFilePath, '');
-
-            return false;
         });
     }
 
